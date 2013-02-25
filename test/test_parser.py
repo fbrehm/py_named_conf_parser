@@ -47,9 +47,11 @@ class TestNamedConfParser(NamedConfParseTestcase):
         cur_dir = os.path.dirname(sys.argv[0])
         curdir_real = os.path.realpath(cur_dir)
 
+        log.debug("Testing init object without any arguments ...")
         parser = NamedConfParser(verbose = self.verbose)
         self.assertEqual(parser.chroot, None)
 
+        log.debug("Testing init object with the test directory as a chroot dir.")
         parser = NamedConfParser(chroot = cur_dir, verbose = self.verbose)
         self.assertEqual(parser.chroot, curdir_real)
 

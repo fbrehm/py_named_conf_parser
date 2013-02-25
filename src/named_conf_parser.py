@@ -105,12 +105,22 @@ class NamedConfParser(PbBaseHandler):
                 quiet = False,
         )
 
-        self._chroot = chroot
+        self._chroot = None
         """
         @ivar: a directory used to to read and write all operations
                in a kind of chroot environment
         @type: str or None
         """
+
+        if chroot:
+            if not os.path.exists(chroot):
+                msg = _("Chroot directory %r doesn't exists.") % (chroot)
+                raise NamedConfParserError(msg)
+            if not os.path.isdir(chroot):
+                msg = _("Given chroot directory %r is not a directory.") % (
+                        chroot)
+                raise NamedConfParserError(msg)
+            self._chroot = os.path.realpath(chroot)
 
         self._cur_file_chain = []
         """
