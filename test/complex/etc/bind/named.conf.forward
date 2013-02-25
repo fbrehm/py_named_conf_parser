@@ -1,0 +1,157 @@
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+key dhcpupdate {
+	algorithm hmac-md5;
+	secret "rOLKuMxFEbE+IpKhcprMqQ==";
+};
+
+//
+// MASTER ZONES
+//
+
+#
+# for linux machines with avahi
+#
+zone "local" {
+    type master;
+    file "/etc/bind/zones/local/local.zone";
+};
+
+#
+# pb.local area
+#
+zone "pb.local" {
+    type master;
+    file "/etc/bind/zones/pb.local/pb.local.zone";
+};
+
+zone "ritest.pb.local" {
+    type master;
+    file "/etc/bind/zones/ritest.pb.local/ritest.pb.local.zone";
+};
+
+zone "dc1.pb.local" {
+    type master;
+    file "/etc/bind/zones/dc1.pb.local/dc1.pb.local.zone";
+};
+
+zone "dc2.pb.local" {
+    type master;
+    file "/etc/bind/zones/dc2.pb.local/dc2.pb.local.zone";
+};
+
+zone "dc252.pb.local" {
+    type master;
+    file "/etc/bind/zones/dc252.pb.local/dc252.pb.local.zone";
+};
+
+zone "pbb251.pb.local" {
+    type master;
+    file "/etc/bind/zones/pbb251.pb.local/pbb251.pb.local.zone";
+};
+
+zone "pbb253.pb.local" {
+    type master;
+    file "/etc/bind/zones/pbb253.pb.local/pbb253.pb.local.zone";
+};
+
+zone "pbb254.pb.local" {
+    type master;
+    file "/etc/bind/zones/pbb254.pb.local/pbb254.pb.local.zone";
+};
+
+#
+# fritz.box
+#
+zone "fritz.box" {
+	type master;
+	file "/etc/bind/zones/fritz.box/fritz.box.zone";
+	// allow-update { key dhcpupdate; };
+};
+
+//
+// SLAVE ZONES
+//
+
+zone "ri.pb.local" {
+	type slave;
+	file "ri.pb.local.zone";
+	masters {
+		192.168.49.2;
+		192.168.178.89;
+	};
+};
+
+#--------------------------------------------------------
+# DC 1 DE
+zone "dc1.de.profitbricks.net" {
+	type slave;
+	file "dc1.de.profitbricks.net.zone";
+	masters {
+		10.1.1.1;
+		10.1.1.2;
+	};
+};
+
+#--------------------------------------------------------
+# DC 2 US
+zone "dc2.us.profitbricks.net" {
+	type slave;
+	file "dc2.us.profitbricks.net.zone";
+	masters {
+		10.2.1.1;
+		192.168.178.89;
+	};
+};
+
+#--------------------------------------------------------
+# Development
+zone "pbb251.de.profitbricks.net" {
+	type slave;
+	file "pbb251.de.profitbricks.net.zone";
+	masters {
+		10.251.1.1;
+		192.168.178.89;
+	};
+};
+
+#--------------------------------------------------------
+# Staging
+zone "dc252.de.profitbricks.net" {
+	type slave;
+	file "dc252.de.profitbricks.net.zone";
+	masters {
+		10.252.1.1;
+		192.168.178.89;
+	};
+};
+
+#--------------------------------------------------------
+# PBB
+zone "pbb254.de.profitbricks.net" {
+	type slave;
+	file "pbb254.de.profitbricks.net.zone";
+	masters {
+		10.254.1.1;
+		192.168.178.89;
+	};
+};
+
+#--------------------------------------------------------
+# windows domain test
+zone "win.pb.local" {
+	type forward;
+	forward only;
+	forwarders {
+		192.168.178.250;
+	};
+};
+
+
+// vim: noai : ts=4 fenc=utf-8 filetype=named

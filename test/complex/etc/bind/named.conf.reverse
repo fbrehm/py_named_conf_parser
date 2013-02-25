@@ -1,0 +1,572 @@
+// 
+// MASTER ZONES ONLY!!!
+// please add slaves zones below
+//
+
+
+zone "0.10.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/0.10.10.in-addr.arpa";
+};
+
+zone "250.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/dc250.de.profitbricks.net/250.10.in-addr.arpa";
+};
+
+zone "253.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pbb253.pb.local/253.10.in-addr.arpa";
+};
+
+//---
+
+zone "253.11.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pbb253.pb.local/253.11.in-addr.arpa";
+};
+
+//---
+
+zone "1.20.172.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/1.20.172.in-addr.arpa";
+};
+
+zone "2.20.172.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/2.20.172.in-addr.arpa";
+};
+
+//---
+
+zone "46.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/46.168.192.in-addr.arpa";
+};
+
+zone "47.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/ritest.pb.local/47.168.192.in-addr.arpa";
+};
+
+zone "48.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/48.168.192.in-addr.arpa";
+};
+
+zone "60.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/60.168.192.in-addr.arpa";
+};
+
+zone "64.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/64.168.192.in-addr.arpa";
+};
+
+zone "68.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/68.168.192.in-addr.arpa";
+};
+
+zone "72.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/72.168.192.in-addr.arpa";
+};
+
+zone "76.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/76.168.192.in-addr.arpa";
+};
+
+zone "80.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/80.168.192.in-addr.arpa";
+};
+
+zone "84.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/84.168.192.in-addr.arpa";
+};
+
+zone "88.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/88.168.192.in-addr.arpa";
+};
+
+zone "92.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/92.168.192.in-addr.arpa";
+};
+
+zone "123.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/123.168.192.in-addr.arpa";
+};
+
+zone "176.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/176.168.192.in-addr.arpa";
+};
+
+zone "178.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/178.168.192.in-addr.arpa";
+};
+
+//---
+
+zone "a.0.0.0.2.8.a.d.e.6.6.3.7.5.c.f.ip6.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/a.0.0.0.2.8.a.d.e.6.6.3.7.5.c.f.ip6.arpa";
+};
+
+zone "c.0.0.0.2.8.a.d.e.6.6.3.7.5.c.f.ip6.arpa" {
+    type master;
+    file "/etc/bind/zones/pb.local/c.0.0.0.2.8.a.d.e.6.6.3.7.5.c.f.ip6.arpa";
+};
+
+
+// 
+// SLAVE ZONES
+//
+
+#--------------------------------------------------------
+# DC1 DE
+
+zone "0.10.in-addr.arpa" {
+    type slave;
+    file "revp.10.0.in-addr.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+    };
+};
+
+zone "1.10.in-addr.arpa" {
+    type slave;
+    file "revp.10.1.in-addr.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.1.0.0.0.0.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.2.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.2.0.0.0.0.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.3.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.3.0.0.0.0.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "1.0.0.0.0.0.0.0.1.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.1.0.1.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "1.0.0.0.0.0.0.0.2.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.2.0.1.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "1.0.0.0.0.0.0.0.3.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.3.0.1.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "1.0.0.0.0.0.0.0.5.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.5.0.1.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "1.0.0.0.0.0.0.0.6.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.6.0.1.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "1.0.0.0.0.0.0.0.7.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.7.0.1.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "1.0.0.0.0.0.0.0.8.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57.8.0.1.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+zone "1.0.0.0.1.0.0.0.2.8.a.d.e.6.6.3.7.5.d.f.ip6.arpa" {
+    type slave;
+    file "revp.fd57.366e.da82.1.1.ip6.arpa.zone";
+    masters {
+        10.1.1.1;
+        10.1.1.2;
+        192.168.178.89;
+    };
+};
+
+#--------------------------------------------------------
+# ri
+
+zone "49.168.192.in-addr.arpa" {
+    type slave;
+    file "revp.49.168.192.in-addr.arpa.zone";
+    masters {
+        192.168.49.2;
+        192.168.178.89;
+    };
+};
+
+#--------------------------------------------------------
+# DC2 US
+
+zone "2.10.in-addr.arpa." {
+    type slave;
+    file "revp.10.2.in-addr.arpa.zone";
+    masters {
+        10.2.1.1;
+        192.168.178.89;
+    };
+};
+
+#--------------------------------------------------------
+# Development
+
+zone "251.10.in-addr.arpa." {
+    type slave;
+    file "revp.10.251.in-addr.arpa.zone";
+    masters {
+        10.251.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.b.f.0.0.0.0.0.0.1.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-1-0-fb-0.ip6.arpa.zone";
+    masters {
+        10.251.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.b.f.0.0.0.0.0.0.2.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-2-0-fb-0.ip6.arpa.zone";
+    masters {
+        10.251.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.b.f.0.0.0.0.0.0.3.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-3-0-fb-0.ip6.arpa.zone";
+    masters {
+        10.251.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.b.f.0.0.0.0.0.0.5.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-5-0-fb-0.ip6.arpa.zone";
+    masters {
+        10.251.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.b.f.0.0.0.0.0.0.6.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-6-0-fb-0.ip6.arpa.zone";
+    masters {
+        10.251.1.1;
+        192.168.178.89;
+    };
+};
+
+#--------------------------------------------------------
+# Staging
+
+zone "252.10.in-addr.arpa." {
+    type slave;
+    file "revp.10.252.in-addr.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "252.11.in-addr.arpa." {
+    type slave;
+    file "revp.11.252.in-addr.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.0.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57-0-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.1.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57-1-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.2.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57-2-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.3.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57-3-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.5.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57-5-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.6.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57-6-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.7.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57-7-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.8.0.0.0.7.5.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fc57-8-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.1.0.0.0.7.5.d.f.ip6.arpa" {
+    type slave;
+    file "revp.fd57-1-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.c.f.0.0.0.0.0.0.2.0.0.0.7.5.d.f.ip6.arpa" {
+    type slave;
+    file "revp.fd57-2-0-fc-0.ip6.arpa.zone";
+    masters {
+        10.252.1.1;
+        192.168.178.89;
+    };
+};
+
+#--------------------------------------------------------
+#--------------------------------------------------------
+# PBB
+
+zone "254.10.in-addr.arpa." {
+    type slave;
+    file "revp.10.254.in-addr.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "254.11.in-addr.arpa." {
+    type slave;
+    file "revp.11.254.in-addr.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.0.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-0-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.1.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-1-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.2.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-2-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.3.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-3-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.5.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-5-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.6.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-6-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.7.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-7-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.8.0.0.0.f.f.c.f.ip6.arpa" {
+    type slave;
+    file "revp.fcff-8-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.1.0.0.0.f.f.d.f.ip6.arpa" {
+    type slave;
+    file "revp.fdff-1-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+zone "0.0.0.0.e.f.0.0.0.0.0.0.2.0.0.0.f.f.d.f.ip6.arpa" {
+    type slave;
+    file "revp.fdff-2-0-fe-0.ip6.arpa.zone";
+    masters {
+        10.254.1.1;
+        192.168.178.89;
+    };
+};
+
+
+# vim: filetype=named ts=8 fileencoding=utf-8

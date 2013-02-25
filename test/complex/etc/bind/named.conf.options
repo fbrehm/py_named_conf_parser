@@ -1,0 +1,172 @@
+// $Id: named.conf.options 13230 2011-05-24 11:01:24Z fbrehm $
+// $URL: http://svn.profitbricks.localdomain/trunk/sysadmin/bind9/filesystem/etc/bind/named.conf.options $
+
+options {
+	directory "/var/cache/bind";
+
+	// If there is a firewall between you and nameservers you want
+	// to talk to, you may need to fix the firewall to allow multiple
+	// ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+	// If your ISP provided one or more IP addresses for stable 
+	// nameservers, you probably want to use them as forwarders.  
+	// Uncomment the following block, and insert the addresses replacing 
+	// the all-0's placeholder.
+
+	// forwarders {
+	// 	0.0.0.0;
+	// };
+
+	auth-nxdomain no;    # conform to RFC1035
+	listen-on-v6 { any; };
+	listen-on { any; };
+
+	// allow-query { 127.0.0.0/8 ; 192.168.0.0/16 ; 10.0.0.0/8; } ;
+	// allow-recursion { 127.0.0.0/8 ; 192.168.0.0/16 ; 10.0.0.0/8; } ;
+
+	allow-notify {
+		192.168.178.85;
+		192.168.178.89;
+		fc57:366e:da82:2:22cf:30ff:fe11:e4c6;
+		fe80::22cf:30ff:fe11:e4c6;
+	};
+
+	allow-transfer {
+		127.0.0.1;
+		::1;
+		10.1.1.1; // mgmt1
+		10.1.1.2; // mgmt2
+		10.2.1.1; // mgmt3
+		10.2.1.2; // mgmt4
+		10.251.1.1;	// pbb251 mgmt11
+		10.254.1.1; // pbb254 mgmt1
+		10.254.1.2; // pbb254 mgmt2
+		10.253.1.1; // pbb253 mgmt1
+		10.253.1.2; // pbb253 mgmt2
+		192.168.49.2;	// riserver
+		192.168.88.88; // samara frank brehm
+		192.168.178.30; // jerusalem
+		192.168.178.85;
+		192.168.178.89; // atalassian
+		192.168.178.157; // uxmal max b
+		fc57:366e:da82:a::a:30;
+		fc57:366e:da82:2:22cf:30ff:fe11:e4c6;
+		fe80::22cf:30ff:fe11:e4c6;
+	};
+
+	allow-query {
+		127.0.0.0/8;
+		192.168.0.0/16;
+		10.0.0.0/8;
+		::1/128;
+		fe80::/10;
+		fc57:366e:da82::/48;
+		2a02:2478:0::/48;
+	};
+
+	allow-recursion {
+		127.0.0.0/8;
+		192.168.0.0/16;
+		10.0.0.0/8;
+		::1/128;
+		fe80::/10;
+		fc57:366e:da82::/48;
+		2a02:2478:0::/48;
+	};
+
+	version "none";
+
+};
+
+//###############################################################
+
+        //inet * allow { 192.168.201.1/32; 127.0.0.0/8; 192.168.200.3/32; } keys { "rndc-key"; };
+controls {
+	inet * allow {
+		192.168.201.1/32;
+		127.0.0.0/8;
+		192.168.200.3/32;
+		::1/128;
+		fe80::5054:ff:fe27:a050;
+		fe80::22cf:30ff:fe11:e4c6;
+		fe80::230:48ff:fef5:ec74;
+		fc57:366e:da82:2:22cf:30ff:fe11:e4c6;
+		fc57:366e:da82:2:230:48ff:fef5:ec74;
+		fc57:366e:da82:2:5054:ff:fe27:a050;
+    } keys { "rndc-key"; };
+};
+
+include "/etc/bind/rndc.key";
+
+//###############################################################
+
+//logging {
+//  channel querylogfile { file "/var/log/bind/queries.log"; };
+//  category queries { querylogfile ; };
+//  category client { querylogfile ; };
+//  category resolver { querylogfile ; };
+//};
+
+logging {
+
+	category default {
+		default_debug;
+		logtofile;
+		null;
+	};
+
+	category general {
+		logtofile;
+		syslog-warning;
+	};
+
+	category lame-servers {
+		null;
+	};
+
+	category queries {
+//		query_logging;
+		null;
+	};
+
+	category edns-disabled {
+		null;
+	};
+
+//	channel complete_debug {
+//		file "/var/log/bind/complete-debug.log";
+//		print-category yes;
+//		print-severity yes;
+//		print-time yes;
+//		severity debug 99;
+//	};
+
+	channel logtofile {
+		file "/var/log/bind/named.log";
+		print-category yes;
+		print-severity yes;
+		print-time yes;
+		severity info;
+	};
+
+//	channel moderate_debug {
+//		file "/var/log/bind/debug.log";
+//		print-category yes;
+//		print-severity yes;
+//		print-time yes;
+//		severity debug 1;
+//	};
+
+//	channel query_logging {
+//		file "/var/log/bind/queries.log";
+//		print-time yes;
+//	};
+
+	channel syslog-warning {
+		syslog daemon;
+		severity warning;
+	};
+
+};
+
+// vim: noai : ts=4 fenc=utf-8 filetype=named
