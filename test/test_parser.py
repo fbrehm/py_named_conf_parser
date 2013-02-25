@@ -27,6 +27,7 @@ from pb_base.common import pp
 
 import named_conf_parser
 from named_conf_parser import NamedConfParserError
+from named_conf_parser import NamedConf
 from named_conf_parser import NamedConfParser
 
 log = logging.getLogger(__name__)
@@ -49,11 +50,17 @@ class TestNamedConfParser(NamedConfParseTestcase):
 
         log.debug("Testing init object without any arguments ...")
         parser = NamedConfParser(verbose = self.verbose)
+        if self.verbose > 2:
+            log.debug("Parser object:\n%s", parser)
         self.assertEqual(parser.chroot, None)
 
         log.debug("Testing init object with the test directory as a chroot dir.")
         parser = NamedConfParser(chroot = cur_dir, verbose = self.verbose)
+        if self.verbose > 2:
+            log.debug("Parser object:\n%s", parser)
         self.assertEqual(parser.chroot, curdir_real)
+
+    #--------------------------------------------------------------------------
 
 #==============================================================================
 
