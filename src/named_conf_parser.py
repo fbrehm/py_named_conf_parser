@@ -100,6 +100,8 @@ class NamedConf(PbBaseObject):
         self._filename = filename
         self._chroot = chroot
 
+        self.initialized = True
+
     #------------------------------------------------------------
     @property
     def filename(self):
@@ -128,7 +130,7 @@ class NamedConf(PbBaseObject):
         @rtype:  dict
         """
 
-        res = super(NamedConfParser, self).as_dict(short = short)
+        res = super(NamedConf, self).as_dict(short = short)
 
         res['chroot'] = self.chroot
         res['filename'] = self.filename
@@ -287,10 +289,12 @@ class NamedConfParser(PbBaseHandler):
             fd = sys.stdin
             current_filename = '-'
         else:
-            fd = self._open_file(filename)
+            #fd = self._open_file(filename)
             current_filename = self._realpath(filename)
 
-        named_conf = NamedConfParser(
+        log.debug(_("Parsing %r ..."), current_filename)
+
+        named_conf = NamedConf(
                 filename = self._abspath_chroot(filename),
                 chroot = self.chroot,
                 appname = self.appname,

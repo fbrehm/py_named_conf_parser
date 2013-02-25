@@ -61,6 +61,23 @@ class TestNamedConfParser(NamedConfParseTestcase):
         self.assertEqual(parser.chroot, curdir_real)
 
     #--------------------------------------------------------------------------
+    def test_parsing_simple(self):
+
+        log.info("Testing parsing of a simple named.conf ...")
+
+        cur_dir = os.path.dirname(sys.argv[0])
+        curdir_real = os.path.realpath(cur_dir)
+        chroot = os.path.join(curdir_real, 'single')
+
+        parser = NamedConfParser(chroot = chroot, verbose = self.verbose)
+        if self.verbose > 2:
+            log.debug("Parser object:\n%s", parser)
+
+        named_conf = parser()
+        if self.verbose > 2:
+            log.debug("NamedConf object:\n%s", pp(
+                    named_conf.as_dict(short = True)))
+        self.assertIsInstance(named_conf, NamedConf)
 
 #==============================================================================
 
@@ -77,6 +94,7 @@ if __name__ == '__main__':
     suite = unittest.TestSuite()
 
     suite.addTest(TestNamedConfParser('test_parser_object', verbose))
+    suite.addTest(TestNamedConfParser('test_parsing_simple', verbose))
 
     runner = unittest.TextTestRunner(verbosity = verbose)
 
