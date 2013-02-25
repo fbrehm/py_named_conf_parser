@@ -219,6 +219,10 @@ class NamedConfParser(PbBaseHandler):
         @type: list of str
         """
 
+        self._files = {}
+        self._in_quoting = False
+        self.named_conf = None
+
         self.initialized = True
 
     #------------------------------------------------------------
@@ -289,12 +293,12 @@ class NamedConfParser(PbBaseHandler):
             fd = sys.stdin
             current_filename = '-'
         else:
-            #fd = self._open_file(filename)
+            fd = self._open_file(filename)
             current_filename = self._realpath(filename)
 
         log.debug(_("Parsing %r ..."), current_filename)
 
-        named_conf = NamedConf(
+        self.named_conf = NamedConf(
                 filename = self._abspath_chroot(filename),
                 chroot = self.chroot,
                 appname = self.appname,
@@ -303,7 +307,30 @@ class NamedConfParser(PbBaseHandler):
                 use_stderr = self.use_stderr,
         )
 
-        return named_conf
+        self._files = {
+            current_filename: {
+                'fd': fd,
+                'current_rownum': 0,
+                'next_rownum': 1,
+            },
+        }
+        self._in_quoting = False
+
+        ncfg = self.named_conf
+        try:
+            log.debug("Blubber blub ...")
+        finally:
+            for cfg_file in self._files.keys():
+                if self._files[cfg_file]['fd'] is not None:
+                    log.debug(_("Closing %r ..."), cfg_file)
+                    self._files[cfg_file]['fd'].close()
+                    self._files[cfg_file]['fd'] = None
+            self._in_quoting = False
+            self._files = {}
+            ncfg = self.named_conf
+            self.named_conf = None
+
+        return ncfg
 
     #--------------------------------------------------------------------------
     def _abspath(self, path):
@@ -335,6 +362,40 @@ class NamedConfParser(PbBaseHandler):
 
         npath = os.path.relpath(apath, self.chroot)
         return os.path.abspath(os.path.join(os.sep, npath))
+
+    #------------------------------------------------------
+    def _open_file(self, filename):
+        """
+        Checks the availablity of the given filename, and opens it readonly.
+
+        @raise NamedConfParserError: if the file isn't available, or
+                                    another exception if the open fails.
+
+        @param filename: the filename to open
+        @type filename: str
+
+        @return: The file object of the opened file
+        @rtype: file object
+
+        """
+
+        rname = self._realpath(filename)
+
+        if self.verbose > 2:
+            msg = _("Checking %(fname)r (%(rname)s) for open() ...") % {
+                    'fname': filename, 'rname': rname}
+
+        if not os.path.isfile(rname):
+            msg = _("File %r not found.") % (rname)
+            raise NamedConfParserError(msg)
+
+        if not os.access(rname, os.R_OK):
+            msg = _("File %r s not readable.") % (rname)
+            raise NamedConfParserError(msg)
+
+        if self.verbose > 1:
+            log.debug(_("Opening %r ..."), rname)
+        return open(rname, "r")
 
 #==============================================================================
 
