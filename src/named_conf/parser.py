@@ -29,7 +29,9 @@ from pb_base.object import PbBaseObject
 from pb_base.handler import PbBaseHandlerError
 from pb_base.handler import PbBaseHandler
 
-__version__ = '0.1.0'
+from named_conf import CommonNamedConfError
+
+__version__ = '0.2.0'
 
 log = logging.getLogger(__name__)
 

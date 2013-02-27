@@ -25,10 +25,13 @@ from pb_base.object import PbBaseObjectError
 
 from pb_base.common import pp
 
-import named_conf_parser
-from named_conf_parser import NamedConfParserError
-from named_conf_parser import NamedConf
-from named_conf_parser import NamedConfParser
+import named_conf
+from named_conf import CommonNamedConfError
+
+import named_conf.parser
+from named_conf.parser import NamedConfParserError
+from named_conf.parser import NamedConf
+from named_conf.parser import NamedConfParser
 
 log = logging.getLogger(__name__)
 

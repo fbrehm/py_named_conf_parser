@@ -11,22 +11,24 @@ if sys.argv[0] != '' and sys.argv[0] != '-c':
     cur_dir = os.path.dirname(sys.argv[0])
 
 libdir = os.path.join(cur_dir, 'src')
-module = os.path.join(libdir, 'named_conf_parser.py')
-if os.path.isdir(libdir) and os.path.isfile(module):
+pkg_dir = os.path.join(libdir, 'named_conf')
+init_py = os.path.join(pkg_dir, '__init__.py')
+if os.path.isdir(pkg_dir) and os.path.isfile(init_py):
     sys.path.insert(0, os.path.abspath(libdir))
-del module
+del init_py
+del pkg_dir
 del libdir
 del cur_dir
 
-import named_conf_parser
+import named_conf
 
-packet_version = named_conf_parser.__version__
+packet_version = named_conf.__version__
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = 'named-conf-parser',
+    name = 'named-conf',
     version = packet_version,
     description = 'Module for a class parsing the named.conf of BIND',
     long_description = read('README.txt'),
@@ -36,8 +38,8 @@ setup(
     license = 'LGPLv3+',
     platforms = ['posix'],
     package_dir = {'': 'src'},
-    py_modules = [
-        'named_conf_parser',
+    packages = [
+        'named_conf',
     ],
     classifiers = [
         'Development Status :: 2 - Pre-Alpha',
