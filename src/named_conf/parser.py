@@ -134,6 +134,7 @@ class NamedConfParser(PbBaseHandler):
         self._files = {}
         self._in_quoting = False
         self.named_conf = None
+        self._token_list = []
 
         self.initialized = True
 
@@ -153,6 +154,22 @@ class NamedConfParser(PbBaseHandler):
         if not self._cur_file_chain:
             return None
         return self._cur_file_chain[-1]
+
+    #------------------------------------------------------------
+    @property
+    def cur_fobject(self):
+        """The file object of the currently opened file."""
+
+        if not self.cur_file:
+            return None
+
+        files = getattr(self, '_files', None)
+        if not files:
+            return None
+
+        if not self.cur_file in files:
+            return None
+        return files[self.cur_file]['fobject']
 
     #------------------------------------------------------------
     @property
@@ -180,6 +197,7 @@ class NamedConfParser(PbBaseHandler):
 
         res['chroot'] = self.chroot
         res['cur_file'] = self.cur_file
+        res['cur_fobject'] = self.cur_file
         res['in_quoting'] = self.in_quoting
 
         return res
@@ -215,14 +233,14 @@ class NamedConfParser(PbBaseHandler):
         if filename is None:
             filename = default_named_conf
 
-        fd = None
+        fobject = None
         current_filename = filename
 
         if filename == '-':
-            fd = sys.stdin
+            fobject = sys.stdin
             current_filename = '-'
         else:
-            fd = self._open_file(filename)
+            fobject = self._open_file(filename)
             current_filename = self._realpath(filename)
 
         log.debug(_("Parsing %r ..."), current_filename)
@@ -238,26 +256,28 @@ class NamedConfParser(PbBaseHandler):
 
         self._files = {
             current_filename: {
-                'fd': fd,
+                'fobject': fobject,
                 'current_rownum': 0,
                 'next_rownum': 1,
             },
         }
         self._in_quoting = False
+        self._cur_file_chain = [current_filename]
 
         ncfg = self.named_conf
         try:
             log.debug("Blubber blub ...")
         finally:
             for cfg_file in self._files.keys():
-                if self._files[cfg_file]['fd'] is not None:
+                if self._files[cfg_file]['fobject'] is not None:
                     log.debug(_("Closing %r ..."), cfg_file)
-                    self._files[cfg_file]['fd'].close()
-                    self._files[cfg_file]['fd'] = None
+                    self._files[cfg_file]['fobject'].close()
+                    self._files[cfg_file]['fobject'] = None
             self._in_quoting = False
             self._files = {}
             ncfg = self.named_conf
             self.named_conf = None
+            self._cur_file_chain = []
 
         return ncfg
 
