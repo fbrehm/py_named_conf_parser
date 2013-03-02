@@ -244,6 +244,16 @@ class NamedConfParser(PbBaseHandler):
             return None
         return self._cur_file_chain[-1]
 
+    #------------------------------------------------------------
+    @property
+    def in_quoting(self):
+        """Is the parser currently in a quoted block."""
+        return self._in_quoting
+
+    @in_quoting.settet
+    def in_quoting(self, value):
+        self._in_quoting = bool(value)
+
     #--------------------------------------------------------------------------
     def as_dict(self, short = False):
         """
