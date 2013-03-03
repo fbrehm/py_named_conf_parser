@@ -35,7 +35,7 @@ from named_conf import default_bind_dir
 
 from named_conf.conf import NamedConf
 
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 
 log = logging.getLogger(__name__)
 
@@ -176,7 +176,9 @@ class NamedConfEntry(list, PbBaseObject):
 
     #--------------------------------------------------------------------------
     def __init__(self,
+            items = None,
             indent = 0,
+            base_indent = '    ',
             appname = None,
             verbose = 0,
             version = __version__,
@@ -184,7 +186,8 @@ class NamedConfEntry(list, PbBaseObject):
             use_stderr = False,
             ):
 
-        super(NamedConfEntry, self).__init__(
+        PbBaseObject.__init__(
+                self,
                 appname = appname,
                 verbose = verbose,
                 version = version,
@@ -193,7 +196,16 @@ class NamedConfEntry(list, PbBaseObject):
                 initialized = False,
         )
 
+        _items = []
+        if isinstance(items, list):
+            _items = items
+        elif items is not None:
+            _items.append(items)
+
+        list.__init__(_items)
+
         self._indent = int(indent)
+        self._base_indent = str(base_indent)
 
         self.initialized = True
 
@@ -206,6 +218,16 @@ class NamedConfEntry(list, PbBaseObject):
     @indent.setter
     def indent(self, value):
         self._indent = int(value)
+
+    #------------------------------------------------------------
+    @property
+    def base_indent(self):
+        """The indent, if the indent level is exactly 1."""
+        return self._base_indent
+
+    @base_indent.setter
+    def base_indent(self, value):
+        self._base_indent = str(value)
 
     #--------------------------------------------------------------------------
     def as_dict(self, short = False):
@@ -221,6 +243,8 @@ class NamedConfEntry(list, PbBaseObject):
 
         res = super(NamedConfEntry, self).as_dict(short = short)
 
+        res['base_indent'] = self.base_indent
+        res['indent'] = self.indent
         res['items'] = []
         for item in self:
             if isinstance(item, PbBaseObject):
@@ -242,7 +266,7 @@ class NamedConfEntry(list, PbBaseObject):
 
         out = ''
         if ind:
-            out = '    ' * (4 * ind)
+            out = self.base_indent * ind
 
         i = 0
         for item in self:

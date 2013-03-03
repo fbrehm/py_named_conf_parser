@@ -32,6 +32,7 @@ import named_conf.parser
 from named_conf.parser import NamedConfParserError
 from named_conf.parser import NamedConf
 from named_conf.parser import NamedConfParser
+from named_conf.parser import NamedConfEntry
 
 log = logging.getLogger(__name__)
 
@@ -82,6 +83,28 @@ class TestNamedConfParser(NamedConfParseTestcase):
                     named_conf.as_dict(short = True)))
         self.assertIsInstance(named_conf, NamedConf)
 
+    #--------------------------------------------------------------------------
+    def test_named_conf_entry(self):
+
+        log.info("Testing creating and manipulating a NamedConfEntry.")
+
+        entry = NamedConfEntry(verbose = self.verbose)
+        if self.verbose > 2:
+            log.debug("NamedConfEntry object:\n%s", pp(entry.as_dict(short = True)))
+
+        entry.append('Hallo')
+        entry.append(33)
+        entry.append('bunnies')
+        if self.verbose > 2:
+            log.debug("NamedConfEntry object:\n%s", pp(entry.as_dict(short = True)))
+        log.debug("NamedConfEntry typecast into str: %r", str(entry))
+        self.assertEqual(str(entry), 'Hallo 33 bunnies;')
+        log.debug("NamedConfEntry repr: %r", entry)
+
+        entry.indent = 1
+        log.debug("NamedConfEntry typecast into str with indention: %r", str(entry))
+        self.assertEqual(str(entry), '    Hallo 33 bunnies;')
+
 #==============================================================================
 
 
@@ -98,6 +121,7 @@ if __name__ == '__main__':
 
     suite.addTest(TestNamedConfParser('test_parser_object', verbose))
     suite.addTest(TestNamedConfParser('test_parsing_simple', verbose))
+    suite.addTest(TestNamedConfParser('test_named_conf_entry', verbose))
 
     runner = unittest.TextTestRunner(verbosity = verbose)
 
