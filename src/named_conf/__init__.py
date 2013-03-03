@@ -24,7 +24,7 @@ __license__ = 'GPL3'
 # Some module variables
 
 default_named_conf = os.sep + os.path.join('etc', 'bind', 'named.conf')
-
+default_bind_dir = os.sep + os.path.join('var', 'bind')
 
 #==============================================================================
 class CommonNamedConfError(PbBaseObjectError):
