@@ -755,6 +755,12 @@ class NamedConfParser(PbBaseHandler):
             entry = self._tokens_to_entry(tokens)
             entries.append(entry)
 
+        if self.verbose > 2:
+            l = []
+            for entry in entries:
+                l.append(str(entry))
+            log.debug(_("Got NamedConfEntry list:") + "\n%s", pp(l))
+
         return entries
 
     #--------------------------------------------------------------------------
@@ -784,11 +790,35 @@ class NamedConfParser(PbBaseHandler):
                 use_stderr = self.use_stderr,
         )
 
+        # TODO: store somewhere file name and row number of the beginning
+        #       of the block
+
+        while len(tokens):
+            if tokens[0].value == ';':
+                if self.verbose > 3:
+                    log.debug(_("End of entry detected."))
+                tokens.pop(0)
+                break
+            if tokens[0].value == '{':
+                block = self._tokens_to_block(tokens, indent)
+                if block:
+                    entry.append(block)
+                    continue
+            token = tokens.pop(0)
+            entry.append(token.value)
+            if not tokens:
+                msg = _("Error in %(file)r (%(nr)d): no semicolon at the end of the last line found.")
+                raise NamedConfParserError(msg %
+                        {'file': token.filename, 'nr': token.row__num})
+
+        if self.verbose > 3:
+            log.debug(_("Got NamedConfEntry object:") + "\n%s",
+                    pp(entry.as_dict(True)))
 
         return entry
 
     #--------------------------------------------------------------------------
-    def _tokens_to_block((self, tokens, indent = 0):
+    def _tokens_to_block(self, tokens, indent = 0):
 
         block = NamedConfBlock(
                 indent = indent,
@@ -806,6 +836,28 @@ class NamedConfParser(PbBaseHandler):
 
         while len(tokens) and token.value != '}':
 
+            filename = tokens[0].filename
+            row_num = tokens[0].row_num
+
+            if tokens[0].value == '}':
+                if self.verbose > 3:
+                    log.debug(_("End of block detected."))
+                tokens.pop(0)
+                break
+
+            entry = self._tokens_to_entry(tokens, indent + 1)
+            if entry:
+                block.append(entry)
+                continue
+
+            if not tokens:
+                msg = _("Error in %(file)r (%(nr)d): no closing curly bracket at the end of the last line found.")
+                raise NamedConfParserError(msg %
+                        {'file': filename, 'nr': row__num})
+
+        if self.verbose > 3:
+            log.debug(_("Got NamedConfBlock object:") + "\n%s",
+                    pp(block.as_dict(True)))
 
         return block
 
@@ -896,34 +948,24 @@ class NamedConfParser(PbBaseHandler):
             line = line.lstrip()
 
             if self.verbose > 3:
-                log.debug(_("Rest of line: %r"), line)
+                log.debug(_("Performing rest of line: %r"), line)
 
-            # Remove C++-like comments
-            match = re.search(r'^[^"]*?//', line)
+            # Remove C-like one line comments
+            match = re.search(r'^[^"]*?/\*[^\*]*\*/', line)
             if match:
+
                 if self.verbose > 3:
-                    log.debug(_("Removing C++-like comments in %(file)r line %(nr)d.") % {
+                    log.debug(_("Start of C-like one line comment detected in %(file)r line %(nr)d.") % {
                             'nr': next_rownum, 'file': self.cur_file})
-                line = re.sub(r'^([^"]*?)//.*\s*', r'\1', line)
-                line += "\n"
+                line = re.sub(r'^([^"]*?)/\*[^\*]*[^\*]*\*/', r'\1', line)
                 continue
 
-            # Remove Perl-like comments
-            match = re.search(r'^[^"]*?#', line)
-            if match:
-                if self.verbose > 3:
-                    log.debug(_("Removing Perl-like comments in %(file)r line %(nr)d.") % {
-                            'nr': next_rownum, 'file': self.cur_file})
-                line = re.sub(r'^([^"]*?)#.*\s*', r'\1', line)
-                line += "\n"
-                continue
-
-            # Remove C-like comments
+            # Remove C-like multiline comments
             match = re.search(r'^[^"]*?/\*', line)
             if match:
 
                 if self.verbose > 3:
-                    log.debug(_("Start of C-like comment detected in %(file)r line %(nr)d.") % {
+                    log.debug(_("Start of C-like multiline comment detected in %(file)r line %(nr)d.") % {
                             'nr': next_rownum, 'file': self.cur_file})
                 line = re.sub(r'^([^"]*?)/\*[^\*]*', r'\1', line)
 
@@ -955,6 +997,26 @@ class NamedConfParser(PbBaseHandler):
                         line += new_line
                         if self.verbose > 4:
                             log.debug(_("Current line: %r"), line)
+                continue
+
+            # Remove C++-like comments
+            match = re.search(r'^[^"]*?//', line)
+            if match:
+                if self.verbose > 3:
+                    log.debug(_("Removing C++-like comments in %(file)r line %(nr)d.") % {
+                            'nr': next_rownum, 'file': self.cur_file})
+                line = re.sub(r'^([^"]*?)//.*\s*', r'\1', line)
+                line += "\n"
+                continue
+
+            # Remove Perl-like comments
+            match = re.search(r'^[^"]*?#', line)
+            if match:
+                if self.verbose > 3:
+                    log.debug(_("Removing Perl-like comments in %(file)r line %(nr)d.") % {
+                            'nr': next_rownum, 'file': self.cur_file})
+                line = re.sub(r'^([^"]*?)#.*\s*', r'\1', line)
+                line += "\n"
                 continue
 
             # Tokens without quotings
