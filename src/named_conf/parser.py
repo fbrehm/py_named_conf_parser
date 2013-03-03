@@ -145,6 +145,28 @@ class NamedConfToken(PbBaseObject):
 
         return res
 
+    #--------------------------------------------------------------------------
+    def __repr__(self):
+        """Typecasting into a string for reproduction."""
+
+        out = super(NamedConfToken, self).__repr__()[:-2]
+
+        fields = []
+        fields.append("filename=%r" % (self.filename))
+        fields.append("value=%r" % (self.value))
+        fields.append("row_num=%r" % (self.row_num))
+
+        if fields:
+            out += ', ' + ", ".join(fields)
+        out += ")>"
+        return out
+
+    #--------------------------------------------------------------------------
+    def __str__(self):
+        """Typecasting into a string."""
+
+        return "%r (%s %d)" % (self.value, self.filename, self.row_num)
+
 #==============================================================================
 class NamedConfParser(PbBaseHandler):
     """
@@ -478,10 +500,16 @@ class NamedConfParser(PbBaseHandler):
 
         next_token = self._get_next_token()
         while next_token:
-            if self.verbose > 2:
+            if self.verbose > 3:
                 log.debug(_("Got a token: %s"), next_token)
             cur_token_list.append(next_token)
             next_token = self._get_next_token()
+
+        if self.verbose > 3:
+            l = []
+            for token in cur_token_list:
+                l.append(str(token))
+            log.debug(_("Got tokens:") + "\n%s", pp(l))
 
         if not bind_dir:
             bind_dir = default_bind_dir
@@ -498,19 +526,19 @@ class NamedConfParser(PbBaseHandler):
 
         """
 
-        if self.verbose > 2:
+        if self.verbose > 3:
             log.debug(_("Trying to get the next token ..."))
 
         # current token list is empty - read the next line
         if not self._token_list:
             next_line = self._read_next_line()
-            if self.verbose > 2:
+            if self.verbose > 3:
                 log.debug(_("Got the next line %r."), next_line)
             if not next_line:
                 return None
             while not next_line:
                 next_line = self._read_next_line()
-                if self.verbose > 2:
+                if self.verbose > 3:
                     log.debug(_("Got the next line %r."), next_line)
                 if not next_line:
                     return None
@@ -550,7 +578,7 @@ class NamedConfParser(PbBaseHandler):
         cur_rownum = self.cur_rownum + 1
         next_rownum = self.cur_rownum + 1
 
-        if self.verbose > 2:
+        if self.verbose > 3:
             log.debug(_("Trying to read the next line from %(file)r (%(nr)d)...") % {
                     'nr': next_rownum, 'file': self.cur_file})
 
@@ -562,7 +590,7 @@ class NamedConfParser(PbBaseHandler):
                 log.debug(_("EOF of %r reached."), self.cur_file)
             return None
 
-        if self.verbose > 2:
+        if self.verbose > 3:
             log.debug(_("read line %(nr)d: %(line)r") % {
                     'nr': cur_rownum, 'line': line})
 
@@ -714,7 +742,7 @@ class NamedConfParser(PbBaseHandler):
                     log.debug(_("Currently no valid token fond ..."))
                 new_line = fobject.readline()
                 if new_line == '' or new_line is None:
-                    if self.verbose > 2:
+                    if self.verbose > 3:
                         msg = _("EOF in %(file)r at line %(line)d reached.") % {
                                 'file': self.cur_file, 'line': next_rownum}
                         log.debug(msg)
