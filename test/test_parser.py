@@ -33,6 +33,7 @@ from named_conf.parser import NamedConfParserError
 from named_conf.parser import NamedConf
 from named_conf.parser import NamedConfParser
 from named_conf.parser import NamedConfEntry
+from named_conf.parser import NamedConfBlock
 
 log = logging.getLogger(__name__)
 
@@ -101,9 +102,33 @@ class TestNamedConfParser(NamedConfParseTestcase):
         self.assertEqual(str(entry), 'Hallo 33 bunnies;')
         log.debug("NamedConfEntry repr: %r", entry)
 
-        entry.indent = 1
-        log.debug("NamedConfEntry typecast into str with indention: %r", str(entry))
-        self.assertEqual(str(entry), '    Hallo 33 bunnies;')
+        #entry.indent = 1
+        #log.debug("NamedConfEntry typecast into str with indention: %r", str(entry))
+        #self.assertEqual(str(entry), '    Hallo 33 bunnies;')
+
+    #--------------------------------------------------------------------------
+    def test_named_conf_block(self):
+
+        log.info("Testing creating and manipulating a NamedConfBlock.")
+
+        block = NamedConfBlock(verbose = self.verbose)
+        if self.verbose > 2:
+            log.debug("NamedConfBlock object:\n%s", pp(block.as_dict(short = True)))
+        log.debug("NamedConfBlock typecast into str: %r", str(block))
+        self.assertEqual(str(block), '{ }')
+
+        block.append(NamedConfEntry('10.1.1.1', verbose = self.verbose))
+        block.append(NamedConfEntry('private_ips', verbose = self.verbose))
+
+        if self.verbose > 2:
+            log.debug("NamedConfBlock object:\n%s", pp(block.as_dict(short = True)))
+        log.debug("NamedConfBlock typecast into str: %r", str(block))
+        self.assertEqual(str(block), '{\n    10.1.1.1;\n    private_ips;\n}')
+        log.debug("NamedConfBlock repr: %r", block)
+
+        block.indent = 2
+        log.debug("NamedConfBlock typecast into str with indention: %r", str(block))
+        self.assertEqual(str(block), '{\n            10.1.1.1;\n            private_ips;\n        }')
 
 #==============================================================================
 
@@ -122,6 +147,7 @@ if __name__ == '__main__':
     suite.addTest(TestNamedConfParser('test_parser_object', verbose))
     suite.addTest(TestNamedConfParser('test_parsing_simple', verbose))
     suite.addTest(TestNamedConfParser('test_named_conf_entry', verbose))
+    suite.addTest(TestNamedConfParser('test_named_conf_block', verbose))
 
     runner = unittest.TextTestRunner(verbosity = verbose)
 

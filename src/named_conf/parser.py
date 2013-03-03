@@ -196,13 +196,11 @@ class NamedConfEntry(list, PbBaseObject):
                 initialized = False,
         )
 
-        _items = []
         if isinstance(items, list):
-            _items = items
+            for item in items:
+                self.append(item)
         elif items is not None:
-            _items.append(items)
-
-        list.__init__(_items)
+            self.append(items)
 
         self._indent = int(indent)
         self._base_indent = str(base_indent)
@@ -265,8 +263,6 @@ class NamedConfEntry(list, PbBaseObject):
             ind = 0
 
         out = ''
-        if ind:
-            out = self.base_indent * ind
 
         i = 0
         for item in self:
@@ -275,6 +271,115 @@ class NamedConfEntry(list, PbBaseObject):
             if i < len(self):
                 out += ' '
         out += ';'
+
+        return out
+
+#==============================================================================
+class NamedConfBlock(list, PbBaseObject):
+    """
+    Encapsulation object of a complete configuration block (all entries
+    surrounded by curly brackets).
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self,
+            entries = None,
+            indent = 0,
+            base_indent = '    ',
+            appname = None,
+            verbose = 0,
+            version = __version__,
+            base_dir = None,
+            use_stderr = False,
+            ):
+
+        PbBaseObject.__init__(
+                self,
+                appname = appname,
+                verbose = verbose,
+                version = version,
+                base_dir = base_dir,
+                use_stderr = use_stderr,
+                initialized = False,
+        )
+
+        if isinstance(entries, list):
+            for entry in entries:
+                self.append(entry)
+        elif entries is not None:
+            self.append(entries)
+
+        self._indent = int(indent)
+        self._base_indent = str(base_indent)
+
+        self.initialized = True
+
+    #------------------------------------------------------------
+    @property
+    def indent(self):
+        """The indent level of the current entry"""
+        return self._indent
+
+    @indent.setter
+    def indent(self, value):
+        self._indent = int(value)
+
+    #------------------------------------------------------------
+    @property
+    def base_indent(self):
+        """The indent, if the indent level is exactly 1."""
+        return self._base_indent
+
+    @base_indent.setter
+    def base_indent(self, value):
+        self._base_indent = str(value)
+
+    #--------------------------------------------------------------------------
+    def as_dict(self, short = False):
+        """
+        Transforms the elements of the object into a dict
+
+        @param short: don't include local properties in resulting dict.
+        @type short: bool
+
+        @return: structure as dict
+        @rtype:  dict
+        """
+
+        res = super(NamedConfBlock, self).as_dict(short = short)
+
+        res['base_indent'] = self.base_indent
+        res['indent'] = self.indent
+        res['entries'] = []
+        for entry in self:
+            if isinstance(entry, PbBaseObject):
+                res['entries'].append(entry.as_dict(short))
+            else:
+                res['entries'].append(entry)
+
+        return res
+
+    #--------------------------------------------------------------------------
+    def __str__(self):
+
+        if not len(self):
+            return '{ }'
+
+        ind = self.indent
+        if ind < 0:
+            ind = 0
+        outer_indent = ''
+        inner_indent = self.base_indent
+        if ind:
+            outer_indent = self.base_indent * ind
+            inner_indent = self.base_indent * (ind + 1)
+
+        out = '{\n'
+
+        i = 0
+        for entry in self:
+            out += inner_indent + str(entry) + "\n"
+        out += outer_indent + '}'
 
         return out
 
