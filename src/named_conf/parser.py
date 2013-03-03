@@ -727,9 +727,87 @@ class NamedConfParser(PbBaseHandler):
                 l.append(str(token))
             log.debug(_("Got tokens:") + "\n%s", pp(l))
 
+        entries = self._tokens_to_entrylist(cur_token_list)
+
         if not bind_dir:
             bind_dir = default_bind_dir
         return bind_dir
+
+    #--------------------------------------------------------------------------
+    def _tokens_to_entrylist(self, tokens):
+        """
+        Tries to translate recursive the list of tokens into a list
+        of NamedConfEntries.
+
+        @param tokens: the list with the tokens, will be reduced during
+                       performing this method
+        @type tokens: list of NamedConfToken
+
+        @return: all found NamedConfEntry objects
+        @rtype: list of NamedConfEntry
+
+        """
+
+        entries = []
+
+        while tokens:
+
+            entry = self._tokens_to_entry(tokens)
+            entries.append(entry)
+
+        return entries
+
+    #--------------------------------------------------------------------------
+    def _tokens_to_entry(self, tokens, indent = 0):
+        """
+        Tries to translate recursive the list of tokens into a single
+        NamedConfEntry object. All necessary tokens are popd from the given
+        token list. Unnessecary tokens are left over for the next entry.
+
+        @raise NamedConfParserError: if the last token in the token list
+                                     is not a semicolon.
+
+        @param tokens: the list with the tokens, will be reduced during
+                       performing this method
+        @type tokens: list of NamedConfToken
+
+        @return: exact one entry
+        @rtype: NamedConfEntry
+
+        """
+
+        entry = NamedConfEntry(
+                indent = indent,
+                appname = self.appname,
+                verbose = self.verbose,
+                base_dir = self.base_dir,
+                use_stderr = self.use_stderr,
+        )
+
+
+        return entry
+
+    #--------------------------------------------------------------------------
+    def _tokens_to_block((self, tokens, indent = 0):
+
+        block = NamedConfBlock(
+                indent = indent,
+                appname = self.appname,
+                verbose = self.verbose,
+                base_dir = self.base_dir,
+                use_stderr = self.use_stderr,
+        )
+
+        # Pop the starting '{' ...
+        token = tokens.pop(0)
+
+        # TODO: store somewhere file name and row number of the beginning
+        #       of the block
+
+        while len(tokens) and token.value != '}':
+
+
+        return block
 
     #--------------------------------------------------------------------------
     def _get_next_token(self):
