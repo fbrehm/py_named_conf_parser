@@ -168,6 +168,93 @@ class NamedConfToken(PbBaseObject):
         return "%r (%s %d)" % (self.value, self.filename, self.row_num)
 
 #==============================================================================
+class NamedConfEntry(list, PbBaseObject):
+    """
+    Encapsulation object of a complete configuration entry (all tokens until
+    the finishing semicolon.
+    """
+
+    #--------------------------------------------------------------------------
+    def __init__(self,
+            indent = 0,
+            appname = None,
+            verbose = 0,
+            version = __version__,
+            base_dir = None,
+            use_stderr = False,
+            ):
+
+        super(NamedConfEntry, self).__init__(
+                appname = appname,
+                verbose = verbose,
+                version = version,
+                base_dir = base_dir,
+                use_stderr = use_stderr,
+                initialized = False,
+        )
+
+        self._indent = int(indent)
+
+        self.initialized = True
+
+    #------------------------------------------------------------
+    @property
+    def indent(self):
+        """The indent level of the current entry"""
+        return self._indent
+
+    @indent.setter
+    def indent(self, value):
+        self._indent = int(value)
+
+    #--------------------------------------------------------------------------
+    def as_dict(self, short = False):
+        """
+        Transforms the elements of the object into a dict
+
+        @param short: don't include local properties in resulting dict.
+        @type short: bool
+
+        @return: structure as dict
+        @rtype:  dict
+        """
+
+        res = super(NamedConfEntry, self).as_dict(short = short)
+
+        res['items'] = []
+        for item in self:
+            if isinstance(item, PbBaseObject):
+                res['items'].append(item.as_dict(short))
+            else:
+                res['items'].append(item)
+
+        return res
+
+    #--------------------------------------------------------------------------
+    def __str__(self):
+
+        if not len(self):
+            return ''
+
+        ind = self.indent
+        if ind < 0:
+            ind = 0
+
+        out = ''
+        if ind:
+            out = '    ' * (4 * ind)
+
+        i = 0
+        for item in self:
+            i += 1
+            out += str(item)
+            if i < len(self):
+                out += ' '
+        out += ';'
+
+        return out
+
+#==============================================================================
 class NamedConfParser(PbBaseHandler):
     """
     Class for a object parsing a named.conf from BIND.
