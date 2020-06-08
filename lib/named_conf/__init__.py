@@ -2,32 +2,27 @@
 # -*- coding: utf-8 -*-
 """
 @author: Frank Brehm
-@contact: frank.brehm@profitbricks.com
-@copyright: © 2010 - 201r32 by Frank Brehm, Berlin
+@contact: frank@brehm-online.com
+@copyright: © 2020 by Frank Brehm, Berlin
 @summary: All modules used by named_conf package
 """
+from __future__ import absolute_import
 
-import os
-import sys
+from pathlib import Path
 
 # Own modules
+from fb_tools.errors import FbError
 
-from pb_base.object import PbBaseObjectError
-
-__author__ = 'Frank Brehm <frank.brehm@profitbricks.com>'
-__copyright__ = '(C) 2010-2013 ProfitBricks GmbH, Berlin'
-__contact__ = 'frank.brehm@profitbricks.com'
-__version__ = '0.3.0'
-__license__ = 'GPL3'
+__version__ = '0.4.0'
 
 #---------------------------------------------
 # Some module variables
 
-default_named_conf = os.sep + os.path.join('etc', 'bind', 'named.conf')
-default_bind_dir = os.sep + os.path.join('var', 'bind')
+DEFAULT_NAMED_CONF = Path('/etc') / 'bind' / 'named.conf'
+DEFAULT_BIND_DIR = Path('/var') / 'bind'
 
 #==============================================================================
-class CommonNamedConfError(PbBaseObjectError):
+class CommonNamedConfError(FbError):
     """
     Base error class for all exceptions belonging to the named_conf package
     """
