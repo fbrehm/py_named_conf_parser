@@ -1,0 +1,6 @@
+six
+pytz
+setuptools
+wheel
+Babel
+git+https://github.com/fbrehm/python_fb_tools.git@master
