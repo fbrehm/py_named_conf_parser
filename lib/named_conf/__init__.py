@@ -21,13 +21,22 @@ __version__ = '0.4.0'
 DEFAULT_NAMED_CONF = Path('/etc') / 'bind' / 'named.conf'
 DEFAULT_BIND_DIR = Path('/var') / 'bind'
 
+
 #==============================================================================
-class CommonNamedConfError(FbError):
+class CommonIscConfError(FbError):
     """
     Base error class for all exceptions belonging to the named_conf package
     """
-
     pass
+
+
+#==============================================================================
+class CommonNamedConfError(CommonIscConfError):
+    """
+    Base error class for all exceptions belonging to the named_conf package
+    """
+    pass
+
 
 #==============================================================================
 
@@ -35,6 +44,5 @@ if __name__ == "__main__":
 
     pass
 
-#==============================================================================
 
 # vim: fileencoding=utf-8 filetype=python ts=4

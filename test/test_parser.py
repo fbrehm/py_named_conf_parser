@@ -12,6 +12,8 @@ import os
 import sys
 import logging
 
+from pathlib import Path
+
 try:
     import unittest2 as unittest
 except ImportError:
@@ -44,10 +46,47 @@ class TestNamedConfParser(NamedConfParseTestcase):
         LOG.info("Testing import of named_conf ...")
         import named_conf                                           # noqa
 
+        LOG.info("Testing import of named_conf.isc ...")
+        import named_conf.isc                                           # noqa
+
+        LOG.info("Testing import of named_conf.isc.cfg_token ...")
+        import named_conf.isc.cfg_token                                           # noqa
+
         if self.verbose:
             LOG.debug("Version of Module named_conf: {!r}".format(named_conf.__version__))
             LOG.debug("Default named.conf: {!r}".format(named_conf.DEFAULT_NAMED_CONF))
             LOG.debug("Default Bind directory: {!r}".format(named_conf.DEFAULT_BIND_DIR))
+
+    # -------------------------------------------------------------------------
+    def test_isc_parser_token(self):
+
+        cfg_dir = Path(__file__).parent.resolve() / 'single' / 'etc' / 'bind'
+        cfg_file = cfg_dir / 'named.conf'
+        test_val = 'uhu banane'
+        rownum = 25
+
+        LOG.info("Testing init of a IscConfToken object ...")
+
+        from named_conf.isc.cfg_token import IscConfToken
+
+        token = IscConfToken(
+            value=test_val, filename=cfg_file, row_num=rownum,
+            appname=self.appname, verbose=self.verbose, base_dir=cfg_dir,
+            initialized=True)
+
+        LOG.debug("Got a IscConfToken: {}".format(token))
+        LOG.debug("Repr of IscConfToken: {!r}".format(token))
+        if self.verbose > 1:
+            LOG.debug("IscConfToken as dict:\n{}".format(pp(token.as_dict())))
+
+        self.assertIsInstance(token.value, str)
+        self.assertEqual(token.value, test_val)
+
+        self.assertIsInstance(token.filename, Path)
+        self.assertEqual(token.filename, cfg_file)
+
+        self.assertIsInstance(token.row_num, int)
+        self.assertEqual(token.row_num, rownum)
 
 #    #--------------------------------------------------------------------------
 #    def test_parser_object(self):
@@ -149,6 +188,7 @@ if __name__ == '__main__':
     suite = unittest.TestSuite()
 
     suite.addTest(TestNamedConfParser('test_import', verbose))
+    suite.addTest(TestNamedConfParser('test_isc_parser_token', verbose))
     # suite.addTest(TestNamedConfParser('test_parser_object', verbose))
     # suite.addTest(TestNamedConfParser('test_parsing_simple', verbose))
     # suite.addTest(TestNamedConfParser('test_named_conf_entry', verbose))
