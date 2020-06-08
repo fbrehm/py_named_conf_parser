@@ -4,7 +4,7 @@
 @author: Frank Brehm
 @contact: frank@brehm-online.com
 @copyright: © 2020 by Frank Brehm, Berlin
-@summary: All modules used by named_conf package
+@summary: A module for the IscConfToken object
 """
 from __future__ import absolute_import
 
@@ -14,7 +14,7 @@ from fb_tools.obj import FbBaseObject
 
 from .. import CommonIscConfError
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 # =============================================================================
